@@ -1,6 +1,8 @@
 'use client'
 
 import {FC, FormEvent, useState} from 'react';
+import {v4 as uuid} from 'uuid'
+import {MessageType} from "../typings";
 
 interface IChatInputProps {
 }
@@ -16,6 +18,34 @@ export const ChatInput: FC<IChatInputProps> = () => {
     const messageToSend = input
 
     setInput('')
+
+    const id = uuid()
+
+    const message: MessageType = {
+      id,
+      message: messageToSend,
+      created_at: Date.now(),
+      username: "ShuVeriDa",
+      profilePic: 'https://t4.ftcdn.net/jpg/03/21/43/07/360_F_321430761_qQi0CU9tzI5w1k1vJgdA02LMtXtsXvJE.jpg',
+      email: 'bashtarov@outlook.com'
+    }
+
+    const uploadMesasgeToUpstash = async () => {
+      const res = await fetch('api/addMessage', {
+        method: "Post",
+        headers: {
+          'Content-Type': "application/json"
+        },
+        body: JSON.stringify({
+          message
+        })
+      })
+
+      const data = await res.json()
+      console.log('MESSAGE ADDED >>>', data)
+    }
+
+    uploadMesasgeToUpstash()
   }
 
   return (

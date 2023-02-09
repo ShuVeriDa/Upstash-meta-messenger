@@ -4,7 +4,7 @@ import redis from "../../redis";
 import {MessageType} from "../../typings";
 
 type Data = {
-  message: MessageType
+  messages: MessageType[]
 }
 
 type ErrorData = {
@@ -15,21 +15,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data | ErrorData>
 ) {
-  if(req.method !== 'POST') {
+  if(req.method !== 'GET') {
     res.status(405).json({ body: 'Method Not Allowed' })
     return
   }
 
-  const {message} = req.body
+  const messagesRes = await redis.hvals('messages')
+  const messages: MessageType[] = messagesRes
+      .map(message => JSON.parse(message))
+      .sort((a, b) => b.created_at - a.created_at)
 
-  const newMessage = {
-    ...message,
-    //Replace the timestamp of the user to the timestamp of the sever
-    created_at: Date.now()
-  }
-
-// push to upstash redis db
-  await redis.hset('messages', message.id, JSON.stringify(newMessage))
-
-  res.status(200).json({ message: newMessage })
+  res.status(200).json({ messages  })
 }

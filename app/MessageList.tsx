@@ -8,9 +8,10 @@ import {MessageComponent} from "./MessageComponent";
 import {clientPusher} from "../pusher";
 
 interface IMessageListProps {
+  initialMessages: MessageType[]
 }
 
-export const MessageList: FC<IMessageListProps> = () => {
+export const MessageList: FC<IMessageListProps> = ({initialMessages}) => {
   const {data: messages, error, mutate} = useSWR<MessageType[]>('api/getMessages', fetcher)
 
   useEffect(() => {
@@ -38,7 +39,7 @@ export const MessageList: FC<IMessageListProps> = () => {
 
   return (
     <div className={'space-y-5 px-5 pt-8 pb-32 max-w-2xl xl:max-w-4xl mx-auto'}>
-      {messages?.map(m => <MessageComponent key={m.id} message={m}/>
+      {(messages || initialMessages)?.map(m => <MessageComponent key={m.id} message={m}/>
       )}
     </div>
   );

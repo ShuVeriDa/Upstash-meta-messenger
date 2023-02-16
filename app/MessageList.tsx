@@ -29,6 +29,11 @@ export const MessageList: FC<IMessageListProps> = () => {
         })
       }
     })
+
+    return () => {
+      channel.unbind_all()
+      channel.unsubscribe()
+    }
   }, [messages, mutate, clientPusher])
 
   return (

@@ -2,6 +2,9 @@ import {NextPage} from "next";
 import {MessageList} from "./MessageList";
 import {ChatInput} from "./ChatInput";
 import {MessageType} from "../typings";
+import {getServerSession} from "next-auth";
+import {Providers} from "./providers";
+
 
 interface IPageProps {
 }
@@ -12,13 +15,15 @@ const HomePage: () => Promise<JSX.Element> = async () => {
     .then(res => res.json())
 
   const messages: MessageType[] = data.messages
-
+  const session = await getServerSession()
 
   return (
-    <main>
-      <MessageList initialMessages={messages}/>
-      <ChatInput/>
-    </main>
+    <Providers session={session}>
+      <main>
+        <MessageList initialMessages={messages}/>
+        <ChatInput session={session}/>
+      </main>
+    </Providers>
   );
 };
 export default HomePage

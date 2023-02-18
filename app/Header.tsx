@@ -1,15 +1,15 @@
-
 import Image from "next/image";
-import {FC} from "react";
 import Link from "next/link";
 import {LogoutButton} from "./LogoutButton";
+import {getServerSession} from "next-auth";
 
 interface IHeaderProps {
 }
 
-export const Header: FC<IHeaderProps> = () => {
+export const Header: () => Promise<JSX.Element> = async () => {
 
-  const session = true
+  const session = await getServerSession()
+  // const session = true
 
   if (session) return (
     <header className="stick top-0 z-50 bg-white flex justify-between items-center p-10 shadow-sm">
@@ -44,7 +44,7 @@ export const Header: FC<IHeaderProps> = () => {
           </p>
         </div>
 
-        <Link href={'/auth/sigin'}
+        <Link href={'/auth/signin'}
               className={"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"}
         >
           Sign In

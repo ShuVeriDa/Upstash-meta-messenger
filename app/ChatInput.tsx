@@ -5,12 +5,13 @@ import {v4 as uuid} from 'uuid'
 import {MessageType} from "../typings";
 import useSWR from 'swr'
 import {fetcher} from "../utils/fetchMessages";
-import {log} from "util";
+import {getServerSession} from "next-auth";
 
 interface IChatInputProps {
+  session: Awaited<ReturnType<typeof getServerSession>>
 }
 
-export const ChatInput: FC<IChatInputProps> = () => {
+export const ChatInput: FC<IChatInputProps> = ({session}) => {
   const [input, setInput] = useState('')
   const {data: messages, error, mutate} = useSWR('api/getMessages', fetcher)
   console.log(messages)
@@ -34,7 +35,7 @@ export const ChatInput: FC<IChatInputProps> = () => {
       email: 'bashtarov@outlook.com'
     }
 
-    const uploadMesasgeToUpstash = async () => {
+    const uploadMessageToUpstash = async () => {
       const data = await fetch('api/addMessage', {
         method: "Post",
         headers: {
@@ -48,7 +49,7 @@ export const ChatInput: FC<IChatInputProps> = () => {
       return [data.message, ...messages!]
     }
 
-    await mutate(uploadMesasgeToUpstash, {
+    await mutate(uploadMessageToUpstash, {
       optimisticData: [message, ...messages!],
       rollbackOnError: true
     })
@@ -59,6 +60,7 @@ export const ChatInput: FC<IChatInputProps> = () => {
           className={'fixed bottom-0 z-50 w-full flex px-10 py-5 space-x-2 border-t bg-white border-gray-100'}>
       <input type="text"
              value={input}
+             disabled={!session}
              onChange={(e) => setInput(e.target.value)}
              placeholder={'Enter message here...'}
              className={"flex-1 rounded border border-gray-300 " +

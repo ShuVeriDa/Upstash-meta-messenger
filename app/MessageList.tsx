@@ -21,6 +21,8 @@ export const MessageList: FC<IMessageListProps> = ({initialMessages}) => {
       //if you sent the message, no need to update cache
       if (messages?.find((message) => message.id === data.id)) return
 
+      console.log('-- NEW Message from PusherL ', data.message, "--")
+
       if (!messages) {
         mutate(fetcher)
       } else {

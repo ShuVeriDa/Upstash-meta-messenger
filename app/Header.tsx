@@ -17,13 +17,14 @@ export const Header: () => Promise<JSX.Element> = async () => {
         <Image className={'rounded-full mx-2 object-contain'}
                width={50}
                height={10}
-               src={'https://links.papareact.com/jne'}
+               src={session.user?.image!}
                alt={'Profile picture'}
+               unoptimized
         />
 
         <div>
           <p className={'text-blue-400'}>Logged in as: </p>
-          <p className={'font-bold text-lg'}>Bashtarov Said-Muhammad</p>
+          <p className={'font-bold text-lg'}>{session.user?.name}</p>
         </div>
 
 

@@ -14,11 +14,11 @@ interface IChatInputProps {
 export const ChatInput: FC<IChatInputProps> = ({session}) => {
   const [input, setInput] = useState('')
   const {data: messages, error, mutate} = useSWR('api/getMessages', fetcher)
-  console.log(messages)
+
   const addMessage = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    if (!input) return
+    if (!input || !session) return
 
     const messageToSend = input
 
@@ -30,9 +30,9 @@ export const ChatInput: FC<IChatInputProps> = ({session}) => {
       id,
       message: messageToSend,
       created_at: Date.now(),
-      username: "ShuVeriDa",
-      profilePic: 'https://previews.123rf.com/images/yupiramos/yupiramos1804/yupiramos180420463/100201340-cloud-storage-and-hacker-laptop-hacking-technology-vector-illustration-drawing.jpg',
-      email: 'bashtarov@outlook.com'
+      username: session?.user?.name!,
+      profilePic: session?.user?.image!,
+      email: session?.user?.email!
     }
 
     const uploadMessageToUpstash = async () => {
